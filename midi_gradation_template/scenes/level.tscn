@@ -1,0 +1,91 @@
+[gd_scene load_steps=7 format=3 uid="uid://cvfydvnl08eef"]
+
+[ext_resource type="Script" path="res://scripts/level.gd" id="1_fgu1c"]
+[ext_resource type="Script" path="res://scripts/point_killer.gd" id="2_u6eub"]
+[ext_resource type="Script" path="res://scripts/spawner.gd" id="3_0jvby"]
+[ext_resource type="Script" path="res://scripts/settings.gd" id="4_nhg7n"]
+[ext_resource type="Script" path="res://scripts/midi_input_handler.gd" id="5_qb104"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7bui6"]
+size = Vector2(20, 622)
+
+[node name="MainLevel" type="Node2D"]
+script = ExtResource("1_fgu1c")
+
+[node name="PointKiller" type="Area2D" parent="."]
+position = Vector2(-65, -3)
+script = ExtResource("2_u6eub")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PointKiller"]
+position = Vector2(1, 308)
+shape = SubResource("RectangleShape2D_7bui6")
+
+[node name="Spawner" type="Marker2D" parent="."]
+position = Vector2(779, 356)
+script = ExtResource("3_0jvby")
+
+[node name="Settings" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = -15.0
+offset_top = 1.0
+offset_right = -15.0
+offset_bottom = 1.0
+script = ExtResource("4_nhg7n")
+
+[node name="SettingsContainer" type="VBoxContainer" parent="Settings"]
+layout_mode = 0
+offset_left = 813.0
+offset_top = 50.0
+offset_right = 893.0
+offset_bottom = 270.0
+
+[node name="SpeedContainer" type="VBoxContainer" parent="Settings/SettingsContainer"]
+layout_mode = 2
+
+[node name="SpeedLabel" type="Label" parent="Settings/SettingsContainer/SpeedContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+text = "Speed:"
+
+[node name="SpeedController" type="LineEdit" parent="Settings/SettingsContainer/SpeedContainer"]
+layout_mode = 2
+placeholder_text = "100"
+alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="Settings/SettingsContainer/SpeedContainer"]
+layout_mode = 2
+
+[node name="SpawnFreqContainer" type="VBoxContainer" parent="Settings/SettingsContainer"]
+layout_mode = 2
+
+[node name="SpawnFreqLabel" type="Label" parent="Settings/SettingsContainer/SpawnFreqContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+text = "Spawn
+Frequency:"
+
+[node name="SpawnFreqController" type="LineEdit" parent="Settings/SettingsContainer/SpawnFreqContainer"]
+layout_mode = 2
+placeholder_text = "0.001"
+alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="Settings/SettingsContainer/SpawnFreqContainer"]
+layout_mode = 2
+
+[node name="HideThis" type="Label" parent="Settings/SettingsContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Press H
+to hide
+this menu"
+horizontal_alignment = 1
+
+[node name="MidiInputHandler" type="Node" parent="."]
+script = ExtResource("5_qb104")
+
+[connection signal="body_entered" from="PointKiller" to="PointKiller" method="_on_body_entered"]
+[connection signal="text_submitted" from="Settings/SettingsContainer/SpeedContainer/SpeedController" to="." method="_on_speed_controller_text_submitted"]
+[connection signal="text_submitted" from="Settings/SettingsContainer/SpawnFreqContainer/SpawnFreqController" to="." method="_on_spawn_freq_controller_text_submitted"]
+[connection signal="midi_connection" from="MidiInputHandler" to="Spawner" method="_on_midi_input_handler_midi_connection"]
+[connection signal="midi_infos" from="MidiInputHandler" to="Spawner" method="_on_midi_input_handler_midi_infos"]
